@@ -62,7 +62,7 @@ if __name__ == '__main__':
     f = lambda x: 100*((x[1:] - x[0])**2).sum() + (x[0] - 4)**2
     g1 = lambda x: sum([(i+1)*v**2 for i, v in enumerate(x)]) - 79
     x0 = [3] * 5
-    print(g1(x0))
+
     niter_all = []
     eps_all = np.linspace(0.01, 0.1, num=10)
     for eps in eps_all:
