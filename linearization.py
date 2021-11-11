@@ -59,15 +59,14 @@ def linear_minimize(f, x0, g_list, eps=1e-4, dx=1e-5,
     return x, niter
 
 if __name__ == '__main__':
-    f = lambda x: 100*((x[1:] - x[0])**2).sum() + (x[0] - 3)**2
-    g1 = lambda x: (x**2).sum() - x[2]
-    g2 = lambda x: x[2] - 1
+    f = lambda x: 100*((x[1:] - x[0])**2).sum() + (x[0] - 4)**2
+    g1 = lambda x: sum([(i+1)*v**2 for i, v in enumerate(x)]) - 79
     x0 = [3] * 5
-    
+    print(g1(x0))
     niter_all = []
     eps_all = np.linspace(0.01, 0.1, num=10)
     for eps in eps_all:
-        x_min, niter = linear_minimize(f, x0, [g1, g2], maxstep=10, step_decrement=0.99, eps=eps)
+        x_min, niter = linear_minimize(f, x0, [g1], maxstep=10, step_decrement=0.99, eps=eps)
         niter_all.append(niter)
         
     plt.style.use('ggplot')
