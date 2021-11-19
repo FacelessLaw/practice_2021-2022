@@ -1,3 +1,4 @@
 *.png
 .vscode
 practice
+__pycache__

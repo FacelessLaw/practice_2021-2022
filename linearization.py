@@ -1,7 +1,8 @@
 import numpy as np
-from scipy.optimize import approx_fprime as grad
 from scipy.optimize import linprog
 from matplotlib import pyplot as plt
+
+import utils
 
 def linear_minimize(f, x0, g_list, eps=1e-4, dx=1e-5,
                     maxstep=1e1, step_decrement=0.5, linear_method='simplex',
@@ -37,8 +38,8 @@ def linear_minimize(f, x0, g_list, eps=1e-4, dx=1e-5,
         g(x) ~ g(x_k) + <grad g(x_k), x - x_k> <= 0  <==>  
                <grad g(x_k), x> <= <grad g(x_k), x_k> - g(x_k)
         '''        
-        c = grad(x, f, epsilon=dx)
-        A_ub = np.array([grad(x, g, epsilon=dx) for g in g_list])
+        c = utils.grad_f(x)
+        A_ub = np.array([utils.grad_g(x) for g in g_list])
         b_ub = (A_ub * x).sum(axis=1) - np.array([g(x) for g in g_list])
         bounds = np.c_[x - maxstep, x + maxstep]
         
