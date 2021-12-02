@@ -2,6 +2,7 @@ import numpy as np
 from scipy.optimize import linprog
 from matplotlib import pyplot as plt
 
+import simplex_method
 import utils
 
 def linear_minimize(f, x0, g_list, eps=1e-4, dx=1e-5,
@@ -38,13 +39,15 @@ def linear_minimize(f, x0, g_list, eps=1e-4, dx=1e-5,
         g(x) ~ g(x_k) + <grad g(x_k), x - x_k> <= 0  <==>  
                <grad g(x_k), x> <= <grad g(x_k), x_k> - g(x_k)
         '''        
-        c = utils.grad_f(x)
+        c = np.array(utils.grad_f(x))
         A_ub = np.array([utils.grad_g(x) for g in g_list])
         b_ub = (A_ub * x).sum(axis=1) - np.array([g(x) for g in g_list])
         bounds = np.c_[x - maxstep, x + maxstep]
         
         x0 = x
-        res = linprog(c, A_ub, b_ub, method=linear_method, bounds=bounds)
+        # need for debug purposes
+        # res = linprog(c, A_ub, b_ub, method=linear_method, bounds=bounds) 
+        res = simplex_method.linprog(c, A_ub, b_ub, bounds=bounds)
         if print_linprog:
             print(res)
         niter += res.nit
@@ -62,7 +65,7 @@ def linear_minimize(f, x0, g_list, eps=1e-4, dx=1e-5,
 if __name__ == '__main__':
     f = lambda x: 100*((x[1:] - x[0])**2).sum() + (x[0] - 4)**2
     g1 = lambda x: sum([(i+1)*v**2 for i, v in enumerate(x)]) - 79
-    x0 = [3] * 5
+    x0 = [3, 2, 4, 2.5, 3.1]
 
     niter_all = []
     eps_all = np.linspace(0.01, 0.1, num=10)
